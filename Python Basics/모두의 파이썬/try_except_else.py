@@ -1,0 +1,6 @@
+try:
+    number_input_a=int(input("정수 입력> "))
+except:
+    print("정수를 입력하지 않았습니다.")
+else:
+    print("원의 넓이:",3.14*number_input_a*number_input_a)

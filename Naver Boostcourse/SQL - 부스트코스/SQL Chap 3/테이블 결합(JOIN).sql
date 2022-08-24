@@ -1,0 +1,84 @@
+USE PRACTICE;
+
+/*************INNER JOIN*************/
+/* INNER JOIN: 두 테이블에서 공통적으로 매칭되는 데이터만 결합 */
+
+/* CUSTOMER + SALES INNER JOIN */
+SELECT *
+	FROM CUSTOMER AS A
+	INNER JOIN SALES AS B
+	ON A.MEM_NO = B.MEM_NO;
+
+/* CUSTOMER 및 SALES 테이블은 MEM_NO(회원번호) 기준으로 1:N 관계 */
+SELECT *
+	FROM CUSTOMER AS A
+	INNER JOIN SALES AS B
+	ON A.MEM_NO = B.MEM_NO
+	WHERE A.MEM_NO = '1000970';
+
+
+/*********LEFT JOIN**********/
+/* LEFT JOIN: 두 테이블에서 공통적으로 매칭되는 데이터만 결합 + 왼쪽 테이블의 매칭되지 않는 데이터는 NULL */
+
+/* CUSTOMER * SALES LEFT JOIN */
+SELECT *
+	FROM CUSTOMER AS A
+	LEFT JOIN SALES AS B
+	ON A.MEM_NO = B.MEM_NO;
+    
+
+/*********RIGHT JOIN**********/
+/* RIGHT JOIN: 두 테이블에서 공통적으로 매칭되는 데이터만 결합 + 오른쪽 테이블의 매칭되지 않는 데이터는 NULL */
+
+/* CUSTOMER * SALES RIGHT JOIN */
+SELECT *
+	FROM CUSTOMER AS A
+	RIGHT JOIN SALES AS B
+	ON A.MEM_NO = B.MEM_NO
+    WHERE A.MEM_NO IS NULL;  /* 비회원 주문 조회 / 회원번호 (9999999) */
+    
+
+/********JOIN + SELECT*********/
+SELECT *
+FROM CUSTOMER AS A
+INNER JOIN SALES AS B
+ON A.MEM_NO = B.MEM_NO;
+
+CREATE TEMPORARY TABLE CUSTOMER_SALES_INNER_JOIN
+SELECT A.*
+	   ,B.ORDER_NO
+FROM CUSTOMER AS A
+INNER JOIN SALES AS B
+ON A.MEM_NO = B.MEM_NO;
+
+SELECT * FROM CUSTOMER_SALES_INNER_JOIN;
+
+/* 임시 테이블은 서버 연결 종료시 자공으로 삭제 */
+
+/* 성별이 남성 조건으로 필터링 */
+SELECT * 
+FROM CUSTOMER_SALES_INNER_JOIN
+WHERE GENDER = 'MAN';
+
+
+/* 거주지역별로 구매횟수 집계 */
+SELECT ADDR
+	   ,COUNT(MEM_NO) AS 회원수
+FROM CUSTOMER_SALES_INNER_JOIN
+WHERE GENDER = 'MAN'
+GROUP BY ADDR
+HAVING 회원수 < 100
+ORDER BY 회원수 ASC;
+
+
+/*************3개 이상 테이블 결합****************/
+/* SALES 기준, CUSTOMER & PRODUCT LEFT JOIN */
+
+SELECT *
+FROM SALES AS A
+
+LEFT JOIN CUSTOMER AS B
+ON A.MEM_NO = B.MEM_NO
+
+LEFT JOIN PRODUCT AS C
+ON A. PRODUCT_CODE = C.PRODUCT_CODE;
